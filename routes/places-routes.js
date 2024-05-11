@@ -123,4 +123,15 @@ router.get('/:identifier', (req, res, next) => {
     res.send(formattedPlace);
 });
 
+router.get('/creator/:creatorId', (req, res, next) => {
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    const creatorId = req.params.creatorId;
+    const placesByCreator = DUMMY_PLACES.filter(place => place.creator === creatorId);
+    if (placesByCreator.length === 0) {
+        return res.status(404).json({ message: "No se encontraron lugares para este creador" });
+    }
+    res.json({ places: placesByCreator });
+});
+
+
 module.exports = router;
