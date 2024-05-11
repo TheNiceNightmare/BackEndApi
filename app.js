@@ -1,11 +1,28 @@
+//Importaciones
 const express = require('express');
+const bodyParser = require('body-parser');
 
-const placesRoutes = require('./routes/places-routes');
+
+const placeRoutes = require('./routes/places-routes');
 
 const app = express();
 
-app.use('/api/places',placesRoutes)
+app.use(bodyParser.json());
 
-app.listen(3000, () => {
-    console.log('Servidor Express en funcionamiento en el puerto 3000');
+app.use('/api/places', placeRoutes);
+
+//Manejo de errores
+app.use((error, req, res, next)=>{
+    if(res.headerSent){
+        return next();
+    }
+    res.status(error.code || 500);
+    res.json({
+        message : error.message || 'Error desconocido'
+    });
+
 });
+
+
+
+app.listen(3000);
