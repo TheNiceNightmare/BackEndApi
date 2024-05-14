@@ -153,13 +153,13 @@ router.get('/', (req, res, next)=>{
 router.post('/', (req, res, next)=>{
     const { title, creator} = req.body;
     const createdPlace = {
-       id: uuidv4(),
+        id: uuid.v4(),
         title,
         creator
     }   
-    });
     DUMMY_PLACES.push(createdPlace);
     res.status(201).json({place:createdPlace})
+    });
 
 module.exports = router;
 
