@@ -122,9 +122,13 @@ router.get('/',placesController.getAllPlaces,);
 
  router.get('/:pid', placesController.getPlacesById);
 
- router.get('/users/:uid',placesController.getPlacesByCreator);
+ router.get('/creator/:uid',placesController.getPlacesByCreator);
 
 router.post('/',placesController.postPlaces);
+
+router.patch('/:pid',placesController.updatedPlaces);
+
+
 
 module.exports = router;
 
