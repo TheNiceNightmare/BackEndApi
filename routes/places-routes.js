@@ -8,6 +8,7 @@
 
 //Importaciones
 const express = require('express');
+const uuid = require('uuid');
 const HttpError = require('../models/http-error');
 
 const router = express.Router();
@@ -150,9 +151,9 @@ router.get('/', (req, res, next)=>{
 });
 
 router.post('/', (req, res, next)=>{
-    const {id, title, creator} = req.body;
+    const { title, creator} = req.body;
     const createdPlace = {
-        id: id,
+       id: uuidv4(),
         title,
         creator
     }   
