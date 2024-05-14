@@ -11,6 +11,8 @@ const express = require('express');
 const uuid = require('uuid');
 const HttpError = require('../models/http-error');
 
+const placesController = require('../controllers/places-controllers');
+
 const router = express.Router();
 
 const DUMMY_PLACES = [
@@ -116,50 +118,13 @@ const DUMMY_PLACES = [
         }
     ];
 
-router.get('/', (req, res, next)=>{
-    
-    res.json({DUMMY_PLACES});
-    
-});
+router.get('/',placesController.getAllPlaces,);
 
- router.get('/:pid', (req, res, next) => {
-     const place = DUMMY_PLACES.find(p => {
-         return p.id === req.params.pid;
-     });
-     if(!place){
-        const error = new Error('Lugar no existe para el ID especificado');
-        error.code = 404;
-        next(error);
-     }else{
-         res.json({place});
-         console.log(place);
-     }
- });
+ router.get('/:pid', placesController.getPlacesById);
 
- router.get('/users/:uid', (req, res, next)=>{
-    const places = DUMMY_PLACES.find(p=>{
-        return p.creator === req.params.uid
-    });
+ router.get('/users/:uid',placesController.getPlacesByCreator);
 
-    
-    
-    if(!places){
-        const error = new HttpError('Lugar no existe para el ID de usuario especificado', 404);    
-        throw error;
-    }
-    res.json|(places);
-});
-
-router.post('/', (req, res, next)=>{
-    const { title, creator} = req.body;
-    const createdPlace = {
-        id: uuid.v4(),
-        title,          
-        creator
-    }   
-    DUMMY_PLACES.push(createdPlace);
-    res.status(201).json({place:createdPlace})
-    });
+router.post('/',placesController.postPlaces);
 
 module.exports = router;
 
