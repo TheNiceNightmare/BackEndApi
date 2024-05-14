@@ -154,7 +154,7 @@ router.post('/', (req, res, next)=>{
     const { title, creator} = req.body;
     const createdPlace = {
         id: uuid.v4(),
-        title,
+        title,          
         creator
     }   
     DUMMY_PLACES.push(createdPlace);
