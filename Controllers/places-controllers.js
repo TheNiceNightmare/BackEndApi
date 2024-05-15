@@ -1,8 +1,8 @@
+
 const HttpError = require('../models/http-error');
-const {v4: uuiv4} = require('uuid');
+const uuid = require('uuid');
 
-
-const DUMMY_PLACES = [
+let DUMMY_PLACES = [
     {
         id: "p1",
         title: "Rotonda",
@@ -104,66 +104,72 @@ const DUMMY_PLACES = [
         creator: "u10"
     }
 ];
-const getAllPlaces =  (req, res, next)=>{
-    res.json({DUMMY_PLACES});
-}
-const getPlacesById = (req, res, next) => {
+
+const getAllPlaces = (req, res, next)=>{
+    res.json({places : DUMMY_PLACES});
+};
+
+const getPlacesById = (req, res, next) => {    
     const place = DUMMY_PLACES.find(p => {
         return p.id === req.params.pid;
     });
-    if(!place){
-       const error = new Error('Lugar no existe para el ID especificado');
-       error.code = 404;
-       next(error);
-    }else{
+    if (!place){        
+        const error = new Error('Lugar no existe para el id especificado');
+        error.code = 404;
+        next(error);
+    }
+    else{
         res.json({place});
-        console.log(place);
-    }
-}
-const getUserById = (req, res, next)=>{
-    const places = DUMMY_PLACES.find(p=>{
+    }    
+};
+
+const getPlacesByUsers = (req, res, next)=>{
+    const places = DUMMY_PLACES.find(p => {
         return p.creator === req.params.uid
-    });
-    if(!places){
-        throw new HttpError('Lugar no existe para el ID de usuario especificado', 404);
+    });    
+
+    if (!places){
+        const error = new HttpError('Lugar no existe para el id de usuario especificado', 404);
+        throw error;
     }
+
     res.json({places});
- }
- const savePlaces = (req, res, next)=>{
-    const {id, title, creator} = req.body;
+};
+
+const savePlace = (req, res, next)=>{
+    const {title, creator} = req.body;
     const createdPlace = {
-        id : uuiv4(),
-        title: title, 
-        creator: creator
+        id: uuid.v4(),
+        title,
+        creator
     };
-    console.log(createdPlace);
     DUMMY_PLACES.push(createdPlace);
     res.status(201).json({place:createdPlace});
+};
 
- }
- const updatePlaces = (req, res, next)=>{
-    const {title} = req.body;
-    const PLaceId = req.params.pid;
+const updatePlace = (req, res, next) =>{
+    const { title }  = req.body;
+    const placeId = req.params.pid;
 
-    const updatedPlace = {... DUMMY_PLACES.find(p => p.id === PLaceId)};
-    const placesIndex = DUMMY_PLACES.findIndex(p => p.id === PLaceId);
+    const updatedPlace = {... DUMMY_PLACES.find(p => p.id === placeId)};
+    const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);
 
     updatedPlace.title = title;
 
-    DUMMY_PLACES[placesIndex] = updatedPlace;
+    DUMMY_PLACES[placeIndex] = updatedPlace;
 
     res.status(200).json({place: updatedPlace});
 };
- const deletePlace = (req, res, next)=>{
-    const PlaceId = req.params.pid;
-    
-}
 
+const deletePlace = (req, res, next) => {
+    const placeId = req.params.pid;
+    DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id !== placeId)
+    res.status(200).json({message: 'Lugar Borrado'});
+};
 
-//Exportamos
 exports.getAllPlaces = getAllPlaces;
 exports.getPlacesById = getPlacesById;
-exports.getUsersById = getUserById;
-exports.savePlaces = savePlaces;
-exports.updatePlaces = updatePlaces;
+exports.getPlacesByUsers = getPlacesByUsers;
+exports.savePlace = savePlace;
+exports.updatePlace = updatePlace;
 exports.deletePlace = deletePlace;
